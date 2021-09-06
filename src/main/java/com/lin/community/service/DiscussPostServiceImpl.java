@@ -20,7 +20,7 @@ public class DiscussPostServiceImpl implements DiscussPostService {
 
     @Override
     public List<DiscussPost> getDiscussPosts(int offset, int limit) {
-        return discussPostMapper.selectDiscussPosts(offset,limit);
+        return discussPostMapper.selectDiscussPostsWithUser(offset,limit);
     }
 
     @Override

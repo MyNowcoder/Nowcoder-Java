@@ -8,18 +8,18 @@ import lombok.ToString;
 import java.util.Date;
 
 @Data
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class DiscussPost {
+public class User {
     private Integer id;
-    private String userId;
-    private String title;
-    private String content;
+    private String username;
+    private String password;
+    private String salt;
+    private String email;
     private Short type;
     private Short status;
+    private String activationCode;
+    private String headerUrl;
     private Date createTime;
-    private Integer commentCount;
-    private Double score;
-    private User user;
 }

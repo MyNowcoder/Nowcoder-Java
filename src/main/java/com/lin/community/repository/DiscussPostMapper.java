@@ -15,10 +15,10 @@ public interface DiscussPostMapper {
      * @return  java.util.List<com.lin.community.pojo.DiscussPost>
      *
      */
-    List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
+    List<DiscussPost> selectDiscussPostsWithUser(int userId, int offset, int limit);
     //使用接口的默认实现解决了:当userId不传时，还需要填一个形参
-    default List<DiscussPost> selectDiscussPosts(int offset, int limit){
-        return this.selectDiscussPosts(0,offset,limit);
+    default List<DiscussPost> selectDiscussPostsWithUser(int offset, int limit){
+        return this.selectDiscussPostsWithUser(0,offset,limit);
     }
 
     /**

@@ -23,7 +23,7 @@ public class MapperTest {
 
     @Test
     public void testSelectDiscussPosts(){
-        List<DiscussPost> discussPosts = mapper.selectDiscussPosts(0, 0, 10);
+        List<DiscussPost> discussPosts = mapper.selectDiscussPostsWithUser(0, 0, 10);
         System.out.println(discussPosts);
     }
 }
