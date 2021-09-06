@@ -16,6 +16,10 @@ public interface DiscussPostMapper {
      *
      */
     List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
+    //使用接口的默认实现解决了:当userId不传时，还需要填一个形参
+    default List<DiscussPost> selectDiscussPosts(int offset, int limit){
+        return this.selectDiscussPosts(0,offset,limit);
+    }
 
     /**
      * 查询表中有多少条数据
@@ -25,6 +29,10 @@ public interface DiscussPostMapper {
      *
      */
     int selectDiscussPostRows(@Param("userId")int userId);
+    //使用接口的默认实现解决了:当userId不传时，还需要填一个形参
+    default int selectDiscussPostRows(){
+        return this.selectDiscussPostRows(0);
+    }
 
 
     DiscussPost selectById(Integer id);

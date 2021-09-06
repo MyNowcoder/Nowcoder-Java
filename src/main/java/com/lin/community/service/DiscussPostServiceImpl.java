@@ -5,6 +5,8 @@ import com.lin.community.repository.DiscussPostMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DiscussPostServiceImpl implements DiscussPostService {
 
@@ -14,5 +16,15 @@ public class DiscussPostServiceImpl implements DiscussPostService {
     @Override
     public DiscussPost getDiscussPostById(Integer id) {
         return discussPostMapper.selectById(id);
+    }
+
+    @Override
+    public List<DiscussPost> getDiscussPosts(int offset, int limit) {
+        return discussPostMapper.selectDiscussPosts(offset,limit);
+    }
+
+    @Override
+    public int getDiscussPostRows() {
+        return discussPostMapper.selectDiscussPostRows();
     }
 }
