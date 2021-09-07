@@ -1,7 +1,7 @@
-package com.lin.community.pojo.dto;
+package com.lin.community.dto;
 
 /**
- * 封装分页相关的信息
+ * 封装首页列表分页相关的信息
  * @param
  * @return
  *

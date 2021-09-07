@@ -15,7 +15,7 @@
         <result column="commentCount" property="commentCount"/>
         <result column="score" property="score"/>
         <result column="user_id" property="userId"/>
-        <association property="user" column="user_id" select="com.lin.community.repository.UserMapper.selectById"/>
+        <association property="user" column="user_id" select="com.lin.community.repository.UserMapper.selectUserById"/>
     </resultMap>
     <select id="selectById" resultType="DiscussPost">
         select * from discuss_post where id=#{id}

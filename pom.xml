@@ -74,7 +74,11 @@
 <!--            <optional>true</optional>-->
 <!--        </dependency>-->
 
-
+<!--邮件发送相关的-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
 
     </dependencies>
 
