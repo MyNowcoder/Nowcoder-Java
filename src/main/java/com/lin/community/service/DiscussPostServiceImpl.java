@@ -15,7 +15,7 @@ public class DiscussPostServiceImpl implements DiscussPostService {
 
     @Override
     public DiscussPost getDiscussPostById(Integer id) {
-        return discussPostMapper.selectById(id);
+        return discussPostMapper.selectDiscussPostByIdWithUser(id);
     }
 
     @Override
@@ -26,5 +26,11 @@ public class DiscussPostServiceImpl implements DiscussPostService {
     @Override
     public int getDiscussPostRows() {
         return discussPostMapper.selectDiscussPostRows();
+    }
+
+    @Override
+    public int addDiscussPost(DiscussPost discussPost) {
+        //TODO:过滤敏感词、转义HTML
+        return discussPostMapper.insertDiscussPost(discussPost);
     }
 }

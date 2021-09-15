@@ -1,8 +1,11 @@
 package com.lin.community.service;
 
+import com.lin.community.dto.enums.LoginResultEnum;
+import com.lin.community.pojo.LoginTicket;
 import com.lin.community.pojo.User;
 import com.lin.community.dto.enums.ActivationResultEnum;
 import com.lin.community.dto.enums.RegisterResultEnum;
+import com.lin.community.repository.LoginTicketMapper;
 import com.lin.community.repository.UserMapper;
 import com.lin.community.utils.MailClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +21,15 @@ import java.util.UUID;
 
 import static com.lin.community.dto.enums.RegisterResultEnum.*;
 import static com.lin.community.dto.enums.ActivationResultEnum.*;
+import static com.lin.community.dto.enums.LoginResultEnum.*;
 
 @Service
 public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     @Autowired
     private MailClient mailClient;
@@ -34,10 +40,24 @@ public class UserServiceImpl implements UserService{
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
+    public User getUserById(Integer id){
+        return userMapper.selectUserById(id);
+    }
+
+    public LoginTicket getLoginTicketByTicket(String loginTicket)
+    {
+        return loginTicketMapper.selectLoginTicketByTicket(loginTicket);
+    }
+
+    @Override
+    public int updateUserHeaderUrl(Integer id,String path) {
+        return userMapper.updateUserHeaderUrl(id, path);
+    }
+
     @Override
     public RegisterResultEnum register(User user) {
         User forwardUser = userMapper.selectUserByEmailOrUsername(user.getUsername(), user.getEmail());
-        //判断是否重复
+        //判断用户名或密码是否重复
         if(forwardUser!=null)
         {
             if(forwardUser.getUsername().equals(user.getUsername()))
@@ -82,4 +102,38 @@ public class UserServiceImpl implements UserService{
             return ACTIVATION_SUCCESS;
         }
     }
+
+    /**
+     * 验证账号与密码，返回登录结果
+     * @param   [java.lang.String, java.lang.String, int, java.lang.String]
+     * @return  com.lin.community.dto.enums.LoginResultEnum
+     *
+     */
+    @Override
+    public LoginResultEnum login(String username, String password, int expiredSecond,String ticket) {
+        User user = userMapper.selectUserByEmailOrUsername(username, null);
+        if(user==null)
+            return USERNAME_NOT_EXIST;
+        if(user.getStatus()==0)
+            return USER_NOT_ACTIVATE;
+        String s = DigestUtils.md5DigestAsHex((user.getSalt() + password).getBytes());
+        if(!s.equals(user.getPassword()))
+            return PASSWORD_WRONG;
+
+        //生成登录凭证
+        LoginTicket loginTicket=new LoginTicket();
+        loginTicket.setUserId(user.getId());
+        loginTicket.setTicket(ticket);
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis()+expiredSecond* 1000L));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+        return LOGIN_SUCCESS;
+    }
+
+    @Override
+    public void logout(String ticket) {
+        loginTicketMapper.updateLoginTicketStatusByTicket(-1,ticket);
+    }
+
+
 }

@@ -9,4 +9,6 @@ public interface DiscussPostService {
 
     List<DiscussPost> getDiscussPosts(int offset,int limit);
     int getDiscussPostRows();
+
+    int addDiscussPost(DiscussPost discussPost);
 }

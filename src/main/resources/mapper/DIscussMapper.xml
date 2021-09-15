@@ -11,13 +11,13 @@
         <result column="content" property="content"/>
         <result column="type" property="type"/>
         <result column="status" property="status"/>
-        <result column="createTime" property="createTime"/>
+        <result column="create_time" property="createTime"/>
         <result column="commentCount" property="commentCount"/>
         <result column="score" property="score"/>
         <result column="user_id" property="userId"/>
         <association property="user" column="user_id" select="com.lin.community.repository.UserMapper.selectUserById"/>
     </resultMap>
-    <select id="selectById" resultType="DiscussPost">
+    <select id="selectDiscussPostByIdWithUser" resultMap="DiscussPostMap">
         select * from discuss_post where id=#{id}
     </select>
 
@@ -38,4 +38,9 @@
             and user_id=#{userId}
         </if>
     </select>
+
+    <insert id="insertDiscussPost">
+        insert into discuss_post(user_id,title,content,create_time)
+        values (#{userId},#{title},#{content},#{createTime});
+    </insert>
 </mapper>

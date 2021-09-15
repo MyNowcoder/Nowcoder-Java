@@ -6,6 +6,7 @@
 	<link rel="icon" href="https://static.nowcoder.com/images/logo_87_87.png"/>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
 	<link rel="stylesheet" th:href="@{/css/global.css}" />
+
 	<title>牛客网-首页</title>
 </head>
 <body>	
@@ -26,25 +27,25 @@
 							<li class="nav-item ml-3 btn-group-vertical">
 								<a class="nav-link" th:href="@{/index}">首页</a>
 							</li>
-							<li class="nav-item ml-3 btn-group-vertical">
+							<li class="nav-item ml-3 btn-group-vertical" th:if="${user!=null}">
 								<a class="nav-link position-relative" href="site/letter.html">消息<span class="badge badge-danger">12</span></a>
 							</li>
-							<li class="nav-item ml-3 btn-group-vertical">
-								<a class="nav-link" th:href="@{/register}">注册</a>
+							<li class="nav-item ml-3 btn-group-vertical" th:if="${user==null}">
+								<a class="nav-link" th:href="@{/register}" >注册</a>
 							</li>
-							<li class="nav-item ml-3 btn-group-vertical">
-								<a class="nav-link" href="site/login.html">登录</a>
+							<li class="nav-item ml-3 btn-group-vertical" th:if="${user==null}">
+								<a class="nav-link" th:href="@{/login}">登录</a>
 							</li>
-							<li class="nav-item ml-3 btn-group-vertical dropdown">
+							<li class="nav-item ml-3 btn-group-vertical dropdown" th:if="${user!=null}">
 								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<img src="http://images.nowcoder.com/head/1t.png" class="rounded-circle" style="width:30px;"/>
+									<img th:src="${user.headerUrl}" class="rounded-circle" style="width:30px;"/>
 								</a>
-								<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-									<a class="dropdown-item text-center" href="site/profile.html">个人主页</a>
-									<a class="dropdown-item text-center" href="site/setting.html">账号设置</a>
-									<a class="dropdown-item text-center" href="site/login.html">退出登录</a>
+								<div class="dropdown-menu" aria-labelledby="navbarDropdown" >
+									<a class="dropdown-item text-center" th:href="@{site/profile}">个人主页</a>
+									<a class="dropdown-item text-center" th:href="@{/account/setting}">账号设置</a>
+									<a class="dropdown-item text-center" th:href="@{/logout}">退出登录</a>
 									<div class="dropdown-divider"></div>
-									<span class="dropdown-item text-center text-secondary">nowcoder</span>
+									<span class="dropdown-item text-center text-secondary" th:utext="${user.username}">nowcoder</span>
 								</div>
 							</li>
 						</ul>
@@ -71,33 +72,35 @@
 							<a class="nav-link" href="#">最热</a>
 						</li>
 					</ul>
-					<button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal" data-target="#publishModal">我要发布</button>
+					<button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal" data-target="#publishModal"  th:if="${user!=null}">我要发布</button>
 				</div>
 				<!-- 弹出框 -->
 				<div class="modal fade" id="publishModal" tabindex="-1" role="dialog" aria-labelledby="publishModalLabel" aria-hidden="true">
 					<div class="modal-dialog modal-lg" role="document">
 						<div class="modal-content">
-							<div class="modal-header">
+							<div class="modal-header"  >
 								<h5 class="modal-title" id="publishModalLabel">新帖发布</h5>
 								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 									<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<div class="modal-body">
-								<form>
-									<div class="form-group">
-										<label for="recipient-name" class="col-form-label">标题：</label>
-										<input type="text" class="form-control" id="recipient-name">
+							<div id="modal-body" class="modal-body">
+								<form th:action="@{/discussPost}" method="post">
+									<div class="form-group" >
+										<label for="recipient-name" class="col-form-label"  >标题：</label>
+										<input type="text" class="form-control" id="recipient-name" name="title">
 									</div>
 									<div class="form-group">
 										<label for="message-text" class="col-form-label">正文：</label>
-										<textarea class="form-control" id="message-text" rows="15"></textarea>
+										<textarea class="form-control" id="message-text" rows="15" name="context" ></textarea>
 									</div>
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+									<button id="publish" type="submit" class="btn btn-primary"  >发布</button>
 								</form>
 							</div>
 							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-								<button type="button" class="btn btn-primary" id="publishBtn">发布</button>
+<!--								<button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>-->
+<!--								<button id="publish" type="button" class="btn btn-primary"  >发布</button>-->
 							</div>
 						</div>
 					</div>
@@ -124,7 +127,7 @@
 						</a>
 						<div class="media-body">
 							<h6 class="mt-0 mb-3">
-								<a href="site/discuss-detail.html" th:text="${item.title}"></a>
+								<a th:href="@{|/discussPost/detail/${item.id}|}" th:text="${item.title}"></a>
 								<span class="badge badge-secondary bg-primary" th:if="${item.type==1}">置顶</span>
 								<span class="badge badge-secondary bg-danger" th:if="${item.status==1}">精华</span>
 							</h6>
@@ -141,7 +144,7 @@
 
 				</ul>
 				<!-- 分页 -->
-				<nav class="mt-5" th:if="${page.rows>0}">
+				<nav class="mt-5" th:if="${page.rows>0}" th:fragment="pagination">
 					<ul class="pagination justify-content-center">
 						<li class="page-item">
 							<a class="page-link" th:href="@{${page.path}(current=1)}">首页</a>
@@ -230,5 +233,6 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<script th:src="@{/js/global.js}"></script>
 	<script th:src="@{/js/index.js}"></script>
+
 </body>
 </html>
